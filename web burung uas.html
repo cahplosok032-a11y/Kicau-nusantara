@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Burung Kicau Nusantara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: #00A651;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .admin-badge {
+            background: #00A651;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #00A651;
+            border-bottom-color: #00A651;
+        }
+
+        .tab:hover {
+            color: #00A651;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-section h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00A651;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview .placeholder {
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #00A651;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #008a44;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,166,81,0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Product List */
+        .product-list {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-list h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .product-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .product-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .product-img-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #00A651;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #7f8c8d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .product-table {
+                font-size: 0.9rem;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <div class="logo-icon">🦜</div>
+                <div class="logo-text">
+                    <h1>Burung Kicau Nusantara</h1>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+            <div class="admin-badge">👤 Admin</div>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Alert Messages -->
+        <div id="alertSuccess" class="alert alert-success"></div>
+        <div id="alertError" class="alert alert-error"></div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🦜</div>
+                <h3 id="totalBurung">0</h3>
+                <p>Total Burung</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🌾</div>
+                <h3 id="totalPakan">0</h3>
+                <p>Total Pakan & Vitamin</p>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🏠</div>
+                <h3 id="totalAksesoris">0</h3>
+                <p>Total Aksesoris</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(this, 'burung')">🦜 Burung</button>
+<button class="tab" onclick="openTab(this, 'pakan')">🌾 Pakan & Vitamin</button>
+<button class="tab" onclick="openTab(this, 'aksesoris')">🏠 Sangkar & Aksesoris</button>
+
+        </div>
+
+        <!-- Tab Content: Burung -->
+        <div id="burung" class="tab-content active">
+            <!-- Form Tambah/Edit Burung -->
+            <div class="form-section">
+                <h2 id="formTitleBurung">➕ Tambah Burung Baru</h2>
+                <form id="formBurung">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Burung *</label>
+                            <input type="text" id="namaBurung" required placeholder="Contoh: Burung Kenari">
+                        </div>
+                        <div class="form-group">
+                            <label>Harga (Rp) *</label>
+                            <input type="number" id="hargaBurung" required placeholder="Contoh: 850000">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Deskripsi *</label>
+                            <textarea id="deskripsiBurung" required placeholder="Deskripsi singkat burung..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji Icon</label>
+                            <input type="text" id="emojiBurung" placeholder="🦜" maxlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Gradient Color 1</label>
+                            <input type="color" id="colorBurung1" value="#FFD700">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Upload Gambar (Optional)</label>
+                            <input type="file" id="gambarBurung" accept="image/*" onchange="previewImage(this, 'previewBurung')">
+                        </div>
+                        <div class="form-group full-width">
+                            <div class="image-preview" id="previewBurung">
+                                <div class="placeholder">
+                                    <p>📷 Preview gambar akan muncul di sini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm('burung')">🔄 Reset</button>
+                    </div>
+                    <input type="hidden" id="editIndexBurung" value="-1">
+                </form>
+            </div>
+
+            <!-- List Burung -->
+            <div class="product-list">
+                <h2>📋 Daftar Burung</h2>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBurung">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #7f8c8d;">Belum ada data burung</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Content: Pakan -->
+        <div id="pakan" class="tab-content">
+            <!-- Form Tambah/Edit Pakan -->
+            <div class="form-section">
+                <h2 id="formTitlePakan">➕ Tambah Pakan & Vitamin Baru</h2>
+                <form id="formPakan">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Produk *</label>
+                            <input type="text" id="namaPakan" required placeholder="Contoh: Voer Premium">
+                        </div>
+                        <div class="form-group">
+                            <label>Harga (Rp) *</label>
+                            <input type="number" id="hargaPakan" required placeholder="Contoh: 75000">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Deskripsi *</label>
+                            <textarea id="deskripsiPakan" required placeholder="Deskripsi singkat produk..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji Icon</label>
+                            <input type="text" id="emojiPakan" placeholder="🌾" maxlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Gradient Color 1</label>
+                            <input type="color" id="colorPakan1" value="#FFB347">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Upload Gambar (Optional)</label>
+                            <input type="file" id="gambarPakan" accept="image/*" onchange="previewImage(this, 'previewPakan')">
+                        </div>
+                        <div class="form-group full-width">
+                            <div class="image-preview" id="previewPakan">
+                                <div class="placeholder">
+                                    <p>📷 Preview gambar akan muncul di sini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm('pakan')">🔄 Reset</button>
+                    </div>
+                    <input type="hidden" id="editIndexPakan" value="-1">
+                </form>
+            </div>
+
+            <!-- List Pakan -->
+            <div class="product-list">
+                <h2>📋 Daftar Pakan & Vitamin</h2>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablePakan">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #7f8c8d;">Belum ada data pakan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab Content: Aksesoris -->
+        <div id="aksesoris" class="tab-content">
+            <!-- Form Tambah/Edit Aksesoris -->
+            <div class="form-section">
+                <h2 id="formTitleAksesoris">➕ Tambah Sangkar & Aksesoris Baru</h2>
+                <form id="formAksesoris">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Produk *</label>
+                            <input type="text" id="namaAksesoris" required placeholder="Contoh: Sangkar Kotak Jati">
+                        </div>
+                        <div class="form-group">
+                            <label>Harga (Rp) *</label>
+                            <input type="number" id="hargaAksesoris" required placeholder="Contoh: 850000">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Deskripsi *</label>
+                            <textarea id="deskripsiAksesoris" required placeholder="Deskripsi singkat produk..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Emoji Icon</label>
+                            <input type="text" id="emojiAksesoris" placeholder="🏠" maxlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Gradient Color 1</label>
+                            <input type="color" id="colorAksesoris1" value="#C9A969">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Upload Gambar (Optional)</label>
+                            <input type="file" id="gambarAksesoris" accept="image/*" onchange="previewImage(this, 'previewAksesoris')">
+                        </div>
+                        <div class="form-group full-width">
+                            <div class="image-preview" id="previewAksesoris">
+                                <div class="placeholder">
+                                    <p>📷 Preview gambar akan muncul di sini</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm('aksesoris')">🔄 Reset</button>
+                    </div>
+                    <input type="hidden" id="editIndexAksesoris" value="-1">
+                </form>
+            </div>
+
+            <!-- List Aksesoris -->
+            <div class="product-list">
+                <h2>📋 Daftar Sangkar & Aksesoris</h2>
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableAksesoris">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #7f8c8d;">Belum ada data aksesoris</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+/* =======================
+   STORAGE INIT
+======================= */
+let dataBurung = JSON.parse(localStorage.getItem("dataBurung")) || [];
+let dataPakan = JSON.parse(localStorage.getItem("dataPakan")) || [];
+let dataAksesoris = JSON.parse(localStorage.getItem("dataAksesoris")) || [];
+
+/* =======================
+   SAVE STORAGE
+======================= */
+function saveStorage() {
+    localStorage.setItem("dataBurung", JSON.stringify(dataBurung));
+    localStorage.setItem("dataPakan", JSON.stringify(dataPakan));
+    localStorage.setItem("dataAksesoris", JSON.stringify(dataAksesoris));
+}
+
+/* =======================
+   TAB
+======================= */
+function openTab(btn, tab) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(tab).classList.add("active");
+}
+
+/* =======================
+   PREVIEW IMAGE
+======================= */
+function previewImage(input, target) {
+    const el = document.getElementById(target);
+    const reader = new FileReader();
+    reader.onload = e => el.innerHTML = `<img src="${e.target.result}">`;
+    reader.readAsDataURL(input.files[0]);
+}
+
+/* =======================
+   FORMAT
+======================= */
+function rupiah(x) {
+    return "Rp " + x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/* =======================
+   ADD DATA
+======================= */
+function addData(type) {
+    const nama = document.getElementById(`nama${type}`).value;
+    const harga = document.getElementById(`harga${type}`).value;
+    const desk = document.getElementById(`deskripsi${type}`).value;
+    const emoji = document.getElementById(`emoji${type}`).value || "📦";
+    const color = document.getElementById(`color${type}1`).value;
+    const index = document.getElementById(`editIndex${type}`).value;
+    const fileInput = document.getElementById(`gambar${type}`);
+
+    if (!nama || !harga || !desk) {
+        alert("Lengkapi semua data!");
+        return;
+    }
+
+    // 👉 JIKA ADA GAMBAR
+    if (fileInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            simpanData(type, {
+                nama, harga, deskripsi: desk, emoji, color,
+                gambar: e.target.result   // BASE64
+            }, index);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } 
+    // 👉 TANPA GAMBAR
+    else {
+        simpanData(type, {
+            nama, harga, deskripsi: desk, emoji, color,
+            gambar: null
+        }, index);
+    }
+}
+
+function simpanData(type, obj, index) {
+    let target;
+    if (type === "Burung") target = dataBurung;
+    else if (type === "Pakan") target = dataPakan;
+    else target = dataAksesoris;
+
+    index == -1 ? target.push(obj) : target[index] = obj;
+
+    saveStorage();
+    render(type.toLowerCase());
+    resetForm(type.toLowerCase());
+}
+
+
+/* =======================
+   RENDER
+======================= */
+function render(type) {
+    let data, table;
+    if (type === "burung") data = dataBurung, table = "tableBurung";
+    else if (type === "pakan") data = dataPakan, table = "tablePakan";
+    else data = dataAksesoris, table = "tableAksesoris";
+
+    const el = document.getElementById(table);
+
+    if (!data.length) {
+        el.innerHTML = `<tr><td colspan="5" style="text-align:center">Belum ada data</td></tr>`;
+        return;
+    }
+
+    el.innerHTML = data.map((d,i)=>`
+        <tr>
+            <td>
+                ${d.gambar 
+                    ? `<img src="${d.gambar}" style="width:60px;height:60px;object-fit:cover;border-radius:8px">`
+                    : `<div style="width:60px;height:60px;background:${d.color};
+                       display:flex;align-items:center;justify-content:center;
+                       font-size:2rem;border-radius:8px">${d.emoji}</div>`
+                }
+            </td>
+            <td>${d.nama}</td>
+            <td>${d.deskripsi}</td>
+            <td><b>${rupiah(d.harga)}</b></td>
+            <td class="product-actions">
+                <button class="btn btn-edit" onclick="edit('${type}', ${i})">✏️ Edit</button>
+                <button class="btn btn-danger" onclick="hapus('${type}', ${i})">🗑️ Hapus</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+/* =======================
+   EDIT & DELETE
+======================= */
+function edit(type,i){
+    let data = type==="burung"?dataBurung[i]:type==="pakan"?dataPakan[i]:dataAksesoris[i];
+    const p = type.charAt(0).toUpperCase()+type.slice(1);
+
+    document.getElementById(`nama${p}`).value = data.nama;
+    document.getElementById(`harga${p}`).value = data.harga;
+    document.getElementById(`deskripsi${p}`).value = data.deskripsi;
+    document.getElementById(`emoji${p}`).value = data.emoji;
+    document.getElementById(`color${p}1`).value = data.color;
+    document.getElementById(`editIndex${p}`).value = i;
+}
+
+function hapus(type,i){
+    if(!confirm("Hapus data?")) return;
+    if(type==="burung") dataBurung.splice(i,1);
+    else if(type==="pakan") dataPakan.splice(i,1);
+    else dataAksesoris.splice(i,1);
+    saveStorage();
+    render(type);
+}
+
+/* =======================
+   RESET
+======================= */
+function resetForm(type){
+    const p = type.charAt(0).toUpperCase()+type.slice(1);
+    document.getElementById(`form${p}`).reset();
+    document.getElementById(`editIndex${p}`).value = -1;
+}
+
+/* =======================
+   FORM SUBMIT
+======================= */
+document.getElementById("formBurung").onsubmit = e => {e.preventDefault();addData("Burung")};
+document.getElementById("formPakan").onsubmit = e => {e.preventDefault();addData("Pakan")};
+document.getElementById("formAksesoris").onsubmit = e => {e.preventDefault();addData("Aksesoris")};
+
+/* =======================
+   INIT
+======================= */
+render("burung");
+render("pakan");
+render("aksesoris");
+</script>
+
